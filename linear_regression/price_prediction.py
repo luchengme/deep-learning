@@ -1,11 +1,16 @@
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 import sys
 import os
 
 
 # 线性回归模型
 class linear_regression:
+
+    def __init__(self):
+        self.thetas = []
+        self.los = []
 
     def fit(self, train_X_in, train_Y, learning_rate=0.03, lamda=0.03, regularization="l2"):
         # 样本个数、样本的属性个数
@@ -29,11 +34,12 @@ class linear_regression:
             pred = train_X.dot(self.theta)
             # 损失函数
             J_theta = sum((pred - train_Y) ** 2) / (2 * case_cnt)
+            self.los.append(J_theta)
+            self.thetas.append(self.theta)
             # 更新参数theta
             self.theta -= learning_rate * (lamda * self.theta + (train_X.T.dot(pred - train_Y)) / case_cnt)
 
             # 检测损失函数的变化值，提前结束迭代
-            # ？？？
             if J_theta < last_error_J - threshold_value:
                 last_error_J = J_theta
                 pre_step = step
@@ -90,8 +96,10 @@ if __name__ == "__main__":
     # 模型训练
     model = linear_regression()
     model.fit(unif_trainX, train_Y, learning_rate=0.3, lamda=0.03)
-    test_pred = model.predict(unif_testX)
-    print(np.c_[test_pred, test_Y])
+
+    print(model.thetas)
+    print(model.los)
+
+    # test_pred = model.predict(unif_testX)
     # test_pred_error = sum((test_pred - test_Y) ** 2) / (2 * unif_testX.shape[0])
     # print("Test error is %.6f" % (test_pred_error))
-    # print(model.theta.T)
