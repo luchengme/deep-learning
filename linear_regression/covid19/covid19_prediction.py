@@ -48,6 +48,7 @@ def plot_learning_curve(loss_record, title=''):
 def plot_pred(dv_set, model, device, lim=35., preds=None, targets=None):
     ''' Plot prediction of your DNN '''
     if preds is None or targets is None:
+        # 将model设置成评估“状态”
         model.eval()
         preds, targets = [], []
         for x, y in dv_set:
@@ -60,6 +61,7 @@ def plot_pred(dv_set, model, device, lim=35., preds=None, targets=None):
         targets = torch.cat(targets, dim=0).numpy()
 
     figure(figsize=(5, 5))
+    # 画出预测值和label的散点图
     plt.scatter(targets, preds, c='r', alpha=0.5)
     plt.plot([-0.2, lim], [-0.2, lim], c='b')
     plt.xlim(-0.2, lim)
@@ -155,7 +157,7 @@ class NeuralNet(nn.Module):
         # TODO: How to modify this model to achieve better performance?
         self.net = nn.Sequential(
             nn.Linear(input_dim, 64),
-            nn.ReLU(),
+            nn.Sigmoid(),
             nn.Linear(64, 1)
         )
 
@@ -183,7 +185,7 @@ def train(tr_set, dv_set, model, config, device):
 
     min_mse = 1000.
     loss_record = {'train': [], 'dev': []}  # for recording training loss
-    early_stop_cnt = 0
+    early_stop_cnt = 0  # 记录当前多少轮训练没有“提升”了
     epoch = 0
     while epoch < n_epochs:
         model.train()  # set model to training mode
@@ -212,6 +214,7 @@ def train(tr_set, dv_set, model, config, device):
         loss_record['dev'].append(dev_mse)
         if early_stop_cnt > config['early_stop']:
             # Stop training if your model stops improving for "config['early_stop']" epochs.
+            # 退出训练循环
             break
 
     print('Finished training after {} epochs'.format(epoch))
@@ -251,7 +254,7 @@ target_only = False  # TODO: Using 40 states & 2 tested_positive features
 # TODO: How to tune these hyper-parameters to improve your model's performance?
 config = {
     'n_epochs': 3000,  # maximum number of epochs
-    'batch_size': 270,  # mini-batch size for dataloader
+    'batch_size': 640,  # mini-batch size for dataloader
     'optimizer': 'SGD',  # optimization algorithm (optimizer in torch.optim)
     'optim_hparas': {  # hyper-parameters for the optimizer (depends on which optimizer you are using)
         'lr': 0.001,  # learning rate of SGD
