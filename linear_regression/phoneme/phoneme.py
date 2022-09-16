@@ -136,6 +136,8 @@ for epoch in range(num_epoch):
         optimizer.step()
 
         train_acc += (train_pred.cpu() == labels.cpu()).sum().item()
+        # tensor.cpu()
+        # Returns a copy of this object in CPU memory
         train_loss += batch_loss.item()
 
     # validation
@@ -166,6 +168,8 @@ for epoch in range(num_epoch):
         print('[{:03d}/{:03d}] Train Acc: {:3.6f} Loss: {:3.6f}'.format(
             epoch + 1, num_epoch, train_acc / len(train_set), train_loss / len(train_loader)
         ))
+# [019/020] Train Acc: 0.787433 Loss: 0.646340 | Val Acc: 0.700716 loss: 0.958221
+# [020/020] Train Acc: 0.791535 Loss: 0.633378 | Val Acc: 0.700643 loss: 0.957066
 
 # if not validating, save the last epoch
 if len(val_set) == 0:
