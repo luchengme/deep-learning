@@ -19,6 +19,9 @@ train_tfm = transforms.Compose([
     transforms.Resize((128, 128)),
     # You may add some transforms here.
     # todo
+    transforms.RandomHorizontalFlip(),
+    transforms.RandomVerticalFlip(),
+    transforms.AutoAugment(),
     # ToTensor() should be the last one of the transforms.
     transforms.ToTensor(),
 ])
@@ -49,6 +52,7 @@ class Classifier(nn.Module):
         self.cnn_layers = nn.Sequential(
             nn.Conv2d(3, 64, 3, 1, 1),  # 64个filter/kernel，输出为64*128*128
             nn.BatchNorm2d(64),  # 归一化处理，输入为channel值
+            # 归一化可以放在激活函数之前或者之后
             nn.ReLU(),
             nn.MaxPool2d(2, 2, 0),  # 返回64*64*64
 
@@ -182,7 +186,7 @@ def main():
         for batch in train_loader:
             # A batch consists of image data and corresponding labels.
             imgs, labels = batch
-            # 每个batch的imgs 128*3*128*128  labels 128
+            # 每个batch的imgs batch_size*3*128*128  labels 128
 
             # Forward the data. (Make sure data and model are on the same device.)
             logits = model(imgs.to(device))  # 预测值

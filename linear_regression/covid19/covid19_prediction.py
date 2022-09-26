@@ -192,6 +192,8 @@ def train(tr_set, dv_set, model, config, device):
         # 可以理解成将module设置成训练“状态”
         for x, y in tr_set:  # iterate through the dataloader
             optimizer.zero_grad()  # set gradient to zero
+            # 为什么要将梯度重置为0？
+            # 因为一个batch的loss关于weight的导数是所有sample的loss关于weight的导数的累加和
             x, y = x.to(device), y.to(device)  # move data to device (cpu/cuda)
             pred = model(x)  # forward pass (compute output) 从源码上看，model(x)等价于调用model.forward(x)
             mse_loss = model.cal_loss(pred, y)  # compute loss
