@@ -8,7 +8,7 @@ from torch.utils.data import ConcatDataset, DataLoader, Subset
 from torchvision.datasets import DatasetFolder
 
 
-data_path = 'F:/myjupyter/HW03/food-11/'
+data_path = 'D:/dataset/'
 
 # It is important to do data augmentation in training.
 # However, not every augmentation is useful.
